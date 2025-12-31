@@ -10,6 +10,8 @@ from app.keyboards.main import main_keyboard
 from app.keyboards.province import province_keyboard
 from app.keyboards.city import city_keyboard
 from app.utils.iran_locations import IRAN_PROVINCES
+from app.config import BOT_USERNAME
+
 
 router = Router()
 
@@ -294,3 +296,32 @@ async def update_photo(message: Message, state: FSMContext):
     except Exception as e:
         print(f"خطا در update_photo: {e}")
         await message.answer("❌ خطا در بروزرسانی عکس.")
+
+###########
+
+@router.message(F.text == "🎁 دعوت دوستان")
+async def invite_friends(message: Message):
+    db = await get_db()
+
+    async with db.execute(
+        "SELECT id FROM users WHERE telegram_id = ?",
+        (message.from_user.id,)
+    ) as cursor:
+        user = await cursor.fetchone()
+
+    await db.close()
+
+    if not user:
+        await message.answer("❌ ابتدا باید ثبت‌نام کنید.")
+        return
+
+    user_id = user["id"]
+
+    invite_link = f"https://t.me/{BOT_USERNAME}?start=ref_{user_id}"
+
+    await message.answer(
+        "🤝 <b>لینک دعوت اختصاصی شما:</b>\n\n"
+        f"{invite_link}\n\n"
+        "🎁 با هر ثبت‌نام موفق از طریق این لینک، ۱۵ سکه هدیه می‌گیرید!",
+        parse_mode="HTML"
+    )

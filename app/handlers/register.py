@@ -8,6 +8,8 @@ from app.keyboards.main import main_keyboard
 from app.keyboards.province import province_keyboard
 from app.keyboards.city import city_keyboard
 from app.utils.iran_locations import IRAN_PROVINCES
+from app.services.referral import handle_referral
+
 
 router = Router()
 
@@ -166,7 +168,10 @@ async def register_photo(message: Message, state: FSMContext):
 
     db = await get_db()
 
-    await db.execute(
+    # =========================
+    # ثبت کاربر
+    # =========================
+    cursor = await db.execute(
         """
         INSERT INTO users 
         (telegram_id, name, gender, province, city, age, profile_pic, coins)
@@ -185,12 +190,25 @@ async def register_photo(message: Message, state: FSMContext):
     )
 
     await db.commit()
-    await db.close()
 
+    # id کاربر جدید در دیتابیس
+    user_id = cursor.lastrowid
+
+    # =========================
+    # رفرال
+    # =========================
+    ref_id = data.get("ref_id")
+
+    if ref_id and ref_id != user_id:
+        await handle_referral(
+            inviter_id=ref_id,
+            invited_id=user_id
+        )
+
+    await db.close()
     await state.clear()
 
     await message.answer(
-        "✅ ثبت‌نام شما با موفقیت انجام شد!\n\n"
-        "🎁 ۱۵ سکه به حساب شما اضافه شد.",
+        "✅ ثبت‌نام شما با موفقیت انجام شد!\n\n🎁 ۱۵ سکه دریافت کردید.",
         reply_markup=main_keyboard
     )

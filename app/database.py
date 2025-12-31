@@ -54,5 +54,18 @@ async def init_db():
             reason TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
+
+        -- =========================
+        -- پرداخت‌ها و سکه
+        -- =========================
+        CREATE TABLE IF NOT EXISTS payments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            amount INTEGER,              -- مبلغ پرداخت (تومان)
+            coins INTEGER,               -- تعداد سکه
+            authority TEXT UNIQUE,        -- کد پرداخت درگاه
+            status TEXT DEFAULT 'pending', -- pending | success | failed
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
         """)
         await db.commit()
