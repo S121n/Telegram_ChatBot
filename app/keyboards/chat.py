@@ -2,8 +2,8 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 chat_keyboard = ReplyKeyboardMarkup(
     keyboard=[
-        [KeyboardButton(text="❌ اتمام چت")],
-        [KeyboardButton(text="👤 مشاهده پروفایل")]
+        [KeyboardButton(text="👤 مشاهده پروفایل")],
+        [KeyboardButton(text="🚫 ریپورت"), KeyboardButton(text="❌ اتمام چت")]
     ],
     resize_keyboard=True
 )
