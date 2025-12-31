@@ -14,7 +14,7 @@ router = Router()
 async def start_handler(message: Message, state: FSMContext):
     db = await get_db()
 
-    # بررسی ثبت‌نام کاربر
+    # User registration check
     async with db.execute(
         "SELECT id FROM users WHERE telegram_id = ?",
         (message.from_user.id,)
@@ -22,7 +22,7 @@ async def start_handler(message: Message, state: FSMContext):
         user = await cursor.fetchone()
 
     # =========================
-    # اگر کاربر قبلاً ثبت‌نام کرده
+    # If the user has already registered
     # =========================
     if user:
         await message.answer(
@@ -33,18 +33,18 @@ async def start_handler(message: Message, state: FSMContext):
         return
 
     # =========================
-    # اگر کاربر جدید است
+    # If the user is new
     # =========================
     ref_id = None
 
-    # پردازش لینک دعوت
+    # Processing invitation link
     if message.text and "ref_" in message.text:
         try:
             ref_id = int(message.text.split("ref_")[1])
         except (IndexError, ValueError):
             ref_id = None
 
-    # ذخیره ref_id در FSM
+    # Store ref_id in FSM
     if ref_id:
         await state.update_data(ref_id=ref_id)
 

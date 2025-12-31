@@ -1,5 +1,5 @@
-waiting_users = []  # صف انتظار
-active_chats = {}   # چت‌های فعال: user_id -> partner_id
+waiting_users = []
+active_chats = {}
 
 
 def is_in_chat(user_id: int) -> bool:

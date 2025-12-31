@@ -4,11 +4,10 @@ REFERRAL_REWARD = 20
 
 async def handle_referral(inviter_id: int, invited_id: int):
     if inviter_id == invited_id:
-        return  # دعوت خود = ممنوع
+        return
 
     db = await get_db()
 
-    # آیا قبلاً ثبت شده؟
     cursor = await db.execute(
         "SELECT id FROM referrals WHERE invited_id = ?",
         (invited_id,)
@@ -19,13 +18,11 @@ async def handle_referral(inviter_id: int, invited_id: int):
         await db.close()
         return
 
-    # ثبت رفرال
     await db.execute(
         "INSERT INTO referrals (inviter_id, invited_id) VALUES (?, ?)",
         (inviter_id, invited_id)
     )
 
-    # پاداش سکه
     await db.execute(
         "UPDATE users SET coins = coins + ? WHERE id = ?",
         (REFERRAL_REWARD, inviter_id)

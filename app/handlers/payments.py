@@ -15,7 +15,7 @@ PACKAGES = {
 }
 
 
-# ================== نمایش منوی خرید سکه ==================
+# ================== Show coin purchase menu ==================
 @router.message(F.text == "💳 خرید سکه")
 async def show_coin_packages(message: Message):
     """نمایش پکیج‌های خرید سکه"""
@@ -27,7 +27,7 @@ async def show_coin_packages(message: Message):
     )
 
 
-# ================== بازگشت به منوی اصلی ==================
+# ================== Return to main menu ==================
 @router.message(F.text == "🔙 بازگشت")
 async def back_to_main_menu(message: Message):
     """بازگشت به منوی اصلی"""
@@ -37,7 +37,7 @@ async def back_to_main_menu(message: Message):
     )
 
 
-# ================== شروع پرداخت ==================
+# ================== Start payment ==================
 @router.message(F.text.in_(PACKAGES.keys()))
 async def start_payment(message: Message):
     """شروع فرآیند پرداخت"""
@@ -56,7 +56,7 @@ async def start_payment(message: Message):
         )
         return
 
-    # ذخیره اطلاعات پرداخت در دیتابیس
+    # Store payment information in the database
     try:
         db = await get_db()
         await db.execute(

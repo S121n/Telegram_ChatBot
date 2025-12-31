@@ -6,13 +6,13 @@ from app.database import get_db
 
 class AuthMiddleware(BaseMiddleware):
     async def __call__(self, handler, event: Message, data):
-        # اگر پیام اصلاً متنی نیست (عکس، ویدیو، ...)
+
         if not isinstance(event, Message):
             return await handler(event, data)
 
         state: FSMContext | None = data.get("state")
 
-        # اگر کاربر در حال FSM است (مثلاً ثبت‌نام)
+
         if state:
             current_state = await state.get_state()
             if current_state is not None:

@@ -3,7 +3,7 @@ from app.config import DATABASE_URL
 
 
 # =========================
-# اتصال به دیتابیس
+# Connect to the database
 # =========================
 async def get_db():
     db = await aiosqlite.connect(DATABASE_URL)
@@ -12,7 +12,7 @@ async def get_db():
 
 
 # =========================
-# ساخت جداول دیتابیس
+# Creating database tables
 # =========================
 async def init_db():
     async with aiosqlite.connect(DATABASE_URL) as db:

@@ -42,17 +42,17 @@ async def end_chat(message: Message):
         )
         return
 
-    # حذف برای هر دو طرف
+
     active_chats.pop(user_id, None)
     active_chats.pop(partner_id, None)
 
-    # اطلاع به هر دو طرف
+
     await message.answer(
         "❌ چت با موفقیت پایان یافت.",
         reply_markup=main_keyboard
     )
 
-    # ارسال پیام به طرف مقابل
+
     try:
         await message.bot.send_message(
             chat_id=partner_id,
@@ -81,7 +81,7 @@ async def show_partner_profile(message: Message):
     try:
         db = await get_db()
 
-        # تنظیم row_factory برای دریافت dict
+
         db.row_factory = aiosqlite.Row
 
         async with db.execute(
@@ -103,10 +103,10 @@ async def show_partner_profile(message: Message):
             )
             return
 
-        # تبدیل Row به dictionary
+
         user = dict(row)
 
-        # ساخت متن پروفایل
+
         gender_fa = "پسر" if user['gender'] == "پسر" else "دختر"
 
         text = (
@@ -117,7 +117,7 @@ async def show_partner_profile(message: Message):
             f"📍 {user['province']} - {user['city']}"
         )
 
-        # ارسال پروفایل
+
         if user.get("profile_pic"):
             await message.answer_photo(
                 photo=user["profile_pic"],
@@ -135,14 +135,14 @@ async def show_partner_profile(message: Message):
         )
 
 
-# ================== RELAY MESSAGE (باید آخرین handler باشد) ==================
+# ================== RELAY MESSAGE  ==================
 
 @router.message(F.text)
 async def relay_message(message: Message):
     """ارسال پیام به مخاطب چت"""
     user_id = message.from_user.id
 
-    # فقط اگر کاربر در چت فعال باشد
+
     if user_id not in active_chats:
         return
 

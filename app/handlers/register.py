@@ -129,14 +129,14 @@ async def register_city(message: Message, state: FSMContext):
 async def register_age(message: Message, state: FSMContext):
     text = message.text.strip()
 
-    # بررسی عدد بودن
+    # Checking for a number
     if not text.isdigit():
         await message.answer("❌ لطفاً سن خود را فقط به صورت عدد وارد کنید.")
         return
 
     age = int(text)
 
-    # شرط سنی
+
     if age <= 14:
         await message.answer("❌ سن شما باید بالای ۱۴ سال باشد.")
         return
@@ -169,7 +169,7 @@ async def register_photo(message: Message, state: FSMContext):
     db = await get_db()
 
     # =========================
-    # ثبت کاربر
+    # User registration
     # =========================
     cursor = await db.execute(
         """
@@ -185,17 +185,17 @@ async def register_photo(message: Message, state: FSMContext):
             data["city"],
             data["age"],
             photo_id,
-            15  # 🎁 سکه اولیه
+            15  # FirstCoin
         )
     )
 
     await db.commit()
 
-    # id کاربر جدید در دیتابیس
+    # New user id in db
     user_id = cursor.lastrowid
 
     # =========================
-    # رفرال
+    # Referral
     # =========================
     ref_id = data.get("ref_id")
 

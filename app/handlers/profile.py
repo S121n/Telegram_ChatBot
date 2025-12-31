@@ -16,7 +16,7 @@ from app.config import BOT_USERNAME
 router = Router()
 
 
-# FSM States برای ویرایش پروفایل
+# FSM States for profile editing
 class EditProfileState(StatesGroup):
     name = State()
     province = State()
@@ -297,7 +297,6 @@ async def update_photo(message: Message, state: FSMContext):
         print(f"خطا در update_photo: {e}")
         await message.answer("❌ خطا در بروزرسانی عکس.")
 
-###########
 
 @router.message(F.text == "🎁 دعوت دوستان")
 async def invite_friends(message: Message):

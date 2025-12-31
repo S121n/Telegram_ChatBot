@@ -16,7 +16,7 @@ async def start_match(message: Message):
     """شروع فرآیند جستجوی مخاطب"""
     user_id = message.from_user.id
 
-    # بررسی اینکه کاربر در حال حاضر در چت نباشد
+    # Check if the user is not currently in chat
     if is_in_chat(user_id):
         await message.answer(
             "❌ شما در حال حاضر در چت هستید.",
@@ -24,7 +24,7 @@ async def start_match(message: Message):
         )
         return
 
-    # نمایش کیبورد انتخاب جنسیت
+    # Show gender selection keyboard
     gender_keyboard = ReplyKeyboardMarkup(
         keyboard=[
             [KeyboardButton(text="پسر"), KeyboardButton(text="دختر")]
@@ -47,7 +47,7 @@ async def select_target_gender(message: Message):
     try:
         db = await get_db()
 
-        # دریافت اطلاعات کاربر
+        # Get user information
         async with db.execute(
                 "SELECT gender, coins FROM users WHERE telegram_id = ?",
                 (user_id,)
@@ -62,7 +62,7 @@ async def select_target_gender(message: Message):
             )
             return
 
-        # بررسی موجودی سکه
+        # Check coin balance
         if user[1] < 2:  # user[1] = coins
             await db.close()
             await message.answer(
@@ -79,21 +79,21 @@ async def select_target_gender(message: Message):
             "target_gender": target_gender
         }
 
-        # جستجوی مخاطب
+        # Contact search
         match = find_match(user_data)
 
         if match:
-            # کسر سکه از هر دو کاربر
+            # Deduct coins from both users
             await db.execute(
                 "UPDATE users SET coins = coins - 2 WHERE telegram_id IN (?, ?)",
                 (user_id, match["id"])
             )
             await db.commit()
 
-            # شروع چت
+            # Start chat
             start_chat(user_id, match["id"])
 
-            # اطلاع به هر دو کاربر
+            # Notify both users
             await message.answer(
                 "✅ مخاطب پیدا شد!\n\n"
                 "💬 می‌توانید شروع به چت کنید.",
@@ -110,7 +110,7 @@ async def select_target_gender(message: Message):
             except Exception as e:
                 print(f"خطا در ارسال پیام به مخاطب: {e}")
         else:
-            # اضافه کردن به لیست انتظار
+            # Add to waiting list
             add_to_waiting(user_data)
             await message.answer(
                 "⏳ در حال جستجوی مخاطب...\n\n"
@@ -128,7 +128,7 @@ async def select_target_gender(message: Message):
         )
 
 
-# ==================== جستجوی ویژه ====================
+# ==================== Special search ====================
 
 @router.message(lambda m: m.text == "🎯 جستجوی ویژه")
 async def special_search(message: Message):

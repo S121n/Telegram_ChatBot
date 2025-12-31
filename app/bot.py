@@ -36,23 +36,23 @@ async def main():
 
     dp = Dispatcher()
 
-    # Middlewares (ترتیب مهم است)
+    # Middlewares
     dp.message.middleware(BanMiddleware())
     dp.callback_query.middleware(BanMiddleware())
 
     dp.message.middleware(AuthMiddleware())
     dp.callback_query.middleware(AuthMiddleware())
 
-    # Routers (ترتیب حیاتی است - از خاص به عام)
-    dp.include_router(start_router)       # 1️⃣ /start
-    dp.include_router(register_router)    # 2️⃣ ثبت‌نام
-    dp.include_router(profile_router)     # 3️⃣ پروفایل + دعوت دوستان
-    dp.include_router(payments_router)    # 4️⃣ خرید سکه (باید قبل از match باشد)
-    dp.include_router(match_router)       # 5️⃣ جستجوی مخاطب
-    dp.include_router(report_router)      # 6️⃣ ریپورت
-    dp.include_router(chat_router)        # 7️⃣ چت (باید آخرین باشد)
+    # Routers
+    dp.include_router(start_router)
+    dp.include_router(register_router)
+    dp.include_router(profile_router)
+    dp.include_router(payments_router)
+    dp.include_router(match_router)
+    dp.include_router(report_router)
+    dp.include_router(chat_router)
 
-    # ایجاد جداول دیتابیس
+
     await init_db()
 
     print("✅ ربات با موفقیت راه‌اندازی شد!")

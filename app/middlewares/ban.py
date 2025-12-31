@@ -6,7 +6,7 @@ from app.database import get_db
 
 class BanMiddleware:
     async def __call__(self, handler, event, data):
-        # رویدادهایی که کاربر ندارند (مثلاً service message)
+
         user = None
 
         if isinstance(event, Message):
@@ -27,28 +27,28 @@ class BanMiddleware:
 
         await db.close()
 
-        # اگر کاربر ثبت‌نام نکرده باشد
+        # If the user is not registered
         if not row:
             return await handler(event, data)
 
         banned_until = row["banned_until"]
 
-        # اگر بن نشده
+        # If not banned
         if not banned_until:
             return await handler(event, data)
 
-        # تبدیل تاریخ
+        # Date conversion
         try:
             banned_until_dt = datetime.fromisoformat(banned_until)
         except Exception:
-            # اگر تاریخ خراب باشد، اجازه بده
+            # If the date is broken, let it go
             return await handler(event, data)
 
-        # بررسی پایان بن
+        # Check the end of the bin
         if banned_until_dt <= datetime.now():
             return await handler(event, data)
 
-        # کاربر بن است
+        # The user is Ben
         remaining = banned_until_dt - datetime.now()
         days = remaining.days
         hours = remaining.seconds // 3600
@@ -60,4 +60,4 @@ class BanMiddleware:
             show_alert=True if isinstance(event, CallbackQuery) else False
         )
 
-        return  # ❌ ادامه پردازش متوقف می‌شود
+        return
