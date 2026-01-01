@@ -170,7 +170,7 @@ async function createZarinpalPayment(env: Env, amount: number, authority: string
       body: JSON.stringify(data),
     });
 
-    const result = await response.json();
+    const result: any = await response.json();
 
     if (result?.data?.code === 100) {
       const authorityFromZP = result.data.authority;
@@ -197,7 +197,7 @@ async function verifyZarinpalPayment(env: Env, authority: string, amount: number
       body: JSON.stringify(data),
     });
 
-    const result = await response.json();
+    const result: any = await response.json();
 
     if (result?.data?.code === 100 || result?.data?.code === 101) {
       return true;
