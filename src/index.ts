@@ -36,7 +36,8 @@ export default {
         return new Response('OK', { status: 200 });
       } catch (e) {
         console.error('Error handling update:', e);
-        return new Response('Error', { status: 500 });
+        // Return generic error without exposing internal details
+        return new Response('Internal Server Error', { status: 500 });
       }
     }
 

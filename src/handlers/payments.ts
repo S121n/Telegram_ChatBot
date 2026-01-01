@@ -144,10 +144,15 @@ export async function handlePaymentCallback(env: Env, authority: string, status:
 // ========================
 
 function generateAuthority(): string {
+  // Use crypto.getRandomValues for secure random generation
+  const array = new Uint8Array(18);
+  crypto.getRandomValues(array);
+  
+  // Convert to uppercase alphanumeric string
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let result = '';
-  for (let i = 0; i < 36; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  for (let i = 0; i < array.length; i++) {
+    result += chars.charAt(array[i] % chars.length);
   }
   return result;
 }

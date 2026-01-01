@@ -205,8 +205,10 @@ export async function findMatch(env: Env, userId: number, gender: string, target
     
     if (!waitingUserData) continue;
     
-    // Check if waiting user wants someone of our gender (creating mutual match)
-    if (waitingUserData.target_gender === gender && waitingUserData.id !== userId) {
+    // Check mutual matching: waiting user wants our gender AND is of our target gender
+    if (waitingUserData.target_gender === gender && 
+        waitingUserData.gender === targetGender && 
+        waitingUserData.id !== userId) {
       // Remove from waiting list
       await env.WAITING.delete(key.name);
       return waitingUserData;

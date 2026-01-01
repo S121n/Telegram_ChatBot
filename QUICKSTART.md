@@ -67,6 +67,8 @@ preview_id = "paste-your-users-preview-id-here"
 
 Repeat for all 6 namespaces (USERS, REFERRALS, REPORTS, PAYMENTS, CHATS, WAITING).
 
+**⚠️ CRITICAL**: Make sure you replace ALL placeholder IDs (like "your-users-kv-id") with actual IDs. Deploying with placeholder IDs will cause the bot to fail!
+
 ### 5. Set Secrets
 
 ```bash

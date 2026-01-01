@@ -26,7 +26,7 @@ export async function handleChatMessage(env: Env, bot: TelegramBot, message: Tel
       });
     }
   } catch (e) {
-    console.error('Failed to forward message:', e);
+    console.error('Failed to forward message to partner:', e);
     await bot.sendMessage(
       userId,
       '❌ خطا در ارسال پیام. مخاطب ممکن است ربات را بلاک کرده باشد.'
