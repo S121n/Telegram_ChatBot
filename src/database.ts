@@ -186,24 +186,27 @@ export async function addToWaiting(env: Env, userId: number, gender: string, tar
     timestamp: new Date().toISOString(),
   };
 
-  // Add to waiting list with key pattern that includes target gender for efficient matching
-  const key = `waiting:${targetGender}:${userId}`;
+  // Store by user's own gender so others can find them
+  // Key pattern: waiting:{user's_gender}:{userId}
+  const key = `waiting:${gender}:${userId}`;
   await env.WAITING.put(key, JSON.stringify(waitingUser), {
     expirationTtl: 3600, // Expire after 1 hour
   });
 }
 
 export async function findMatch(env: Env, userId: number, gender: string, targetGender: string): Promise<WaitingUser | null> {
-  // List all users waiting for someone of this user's gender
-  const list = await env.WAITING.list({ prefix: `waiting:${gender}:` });
+  // Search for users of the target gender who want someone of our gender
+  // Key pattern: waiting:{gender}:{userId}
+  // We want users in waiting:{targetGender}:* who have target_gender === gender
+  const list = await env.WAITING.list({ prefix: `waiting:${targetGender}:` });
   
   for (const key of list.keys) {
     const waitingUserData = await env.WAITING.get(key.name, 'json') as WaitingUser;
     
     if (!waitingUserData) continue;
     
-    // Check if the waiting user wants someone of our target gender
-    if (waitingUserData.target_gender === targetGender && waitingUserData.id !== userId) {
+    // Check if waiting user wants someone of our gender (creating mutual match)
+    if (waitingUserData.target_gender === gender && waitingUserData.id !== userId) {
       // Remove from waiting list
       await env.WAITING.delete(key.name);
       return waitingUserData;
