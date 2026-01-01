@@ -33,7 +33,7 @@ async def start_match(message: Message):
     )
 
     await message.answer(
-        "👫 می‌خواهید به چه جنسیتی وصل شوید؟",
+        "👫 میخوای به کی وصل شی ؟",
         reply_markup=gender_keyboard
     )
 

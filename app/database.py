@@ -3,7 +3,7 @@ from app.config import DATABASE_URL
 
 
 # =========================
-# Connect to the database
+# اتصال به دیتابیس
 # =========================
 async def get_db():
     db = await aiosqlite.connect(DATABASE_URL)
@@ -12,7 +12,7 @@ async def get_db():
 
 
 # =========================
-# Creating database tables
+# ساخت جداول دیتابیس
 # =========================
 async def init_db():
     async with aiosqlite.connect(DATABASE_URL) as db:
@@ -30,6 +30,7 @@ async def init_db():
             age INTEGER,
             profile_pic TEXT,
             coins INTEGER DEFAULT 0,
+            referral_code TEXT UNIQUE,
             registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             banned_until TIMESTAMP
         );
@@ -39,8 +40,9 @@ async def init_db():
         -- =========================
         CREATE TABLE IF NOT EXISTS referrals (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            inviter_id INTEGER,
-            invited_id INTEGER UNIQUE,
+            inviter_telegram_id INTEGER,
+            invited_telegram_id INTEGER UNIQUE,
+            referral_code TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
 
@@ -61,10 +63,10 @@ async def init_db():
         CREATE TABLE IF NOT EXISTS payments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
-            amount INTEGER,              -- مبلغ پرداخت (تومان)
-            coins INTEGER,               -- تعداد سکه
-            authority TEXT UNIQUE,        -- کد پرداخت درگاه
-            status TEXT DEFAULT 'pending', -- pending | success | failed
+            amount INTEGER,
+            coins INTEGER,
+            authority TEXT UNIQUE,
+            status TEXT DEFAULT 'pending',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         """)

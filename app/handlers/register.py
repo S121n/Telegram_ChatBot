@@ -1,4 +1,4 @@
-from aiogram import Router
+from aiogram import Router,F
 from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
@@ -9,6 +9,7 @@ from app.keyboards.province import province_keyboard
 from app.keyboards.city import city_keyboard
 from app.utils.iran_locations import IRAN_PROVINCES
 from app.services.referral import handle_referral
+from aiogram.types import ReplyKeyboardRemove
 
 
 router = Router()
@@ -25,7 +26,12 @@ class RegisterState(StatesGroup):
     age = State()
     photo = State()
 
-
+@router.message(F.text == "ثبت نام")
+async def start_register(message: Message, state: FSMContext):
+    await state.clear()
+    await state.set_state(RegisterState.name)
+    await message.answer("📝 لطفاً نام خود را وارد کنید:")
+    reply_markup = ReplyKeyboardRemove()
 # =======================
 # STEP 1: NAME
 # =======================
@@ -115,10 +121,7 @@ async def register_city(message: Message, state: FSMContext):
 
     await message.answer(
         "🎂 سن خود را وارد کنید:",
-        reply_markup=ReplyKeyboardMarkup(
-            keyboard=[[KeyboardButton(text="18"), KeyboardButton(text="20"), KeyboardButton(text="25")]],
-            resize_keyboard=True
-        )
+        reply_markup=ReplyKeyboardRemove()
     )
 
 
